@@ -2,6 +2,7 @@
 // Created by Hongcheng Wei on 2023-08-10.
 //
 #include <iostream>
+#include <sstream>
 #include <ranges>
 #include <vector>
 #include <map>
@@ -15,6 +16,7 @@
 #include <numeric>
 #include <set>
 #include <unordered_set>
+#include <bitset>
 
 template<std::ranges::range R, typename Callback>
 void for_each(const R &r, Callback &&callback) {
@@ -39,7 +41,7 @@ concept StreamablePair =requires(std::ostream &os, T value) {
 template<typename T>
 void print_single(T &&v);
 
-template<typename R>
+template<std::ranges::range R>
 void print_range(const R &r) {
     auto iter = std::begin(r);
     if (iter != std::end(r)) {
