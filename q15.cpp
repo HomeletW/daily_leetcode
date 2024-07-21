@@ -34,7 +34,7 @@ public:
         int j = i + 1, k = nums.size() - 1;
         while (j < k) {
             int sum = nums[i] + nums[j] + nums[k];
-            print_var(sep, nums, i, j, k, sum, result);
+            print_varl(sep, nums, i, j, k, sum, result);
             if (sum < 0) {
                 ++j;
             } else if (sum > 0) {

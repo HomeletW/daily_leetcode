@@ -26,7 +26,7 @@ public:
         int count = 0;
         size_t left = 0, right = sortedPeople.size() - 1;
         while (left <= right) {
-            print_var(sep, left, right, count);
+            print_varl(sep, left, right, count);
             if (left == right) {
                 // put the last person in one boat
                 ++count;

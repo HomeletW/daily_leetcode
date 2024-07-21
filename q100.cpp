@@ -1,25 +1,29 @@
 /**
- *
+ * 100. Same Tree
+ * https://leetcode.com/problems/same-tree
  */
 
 #include "my_util.hpp"
+#include "my_tree_node.hpp"
 
 using namespace std;
 
 /**
  * Definition for a binary tree node.
  */
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
+//struct TreeNode {
+//    int val;
+//    TreeNode *left;
+//    TreeNode *right;
+//
+//    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+//
+//    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+//
+//    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+//};
 
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
+using TreeNode = TreeNode_generic<int>;
 
 class Solution {
 public:
@@ -82,17 +86,27 @@ void test3() {
     a1.right = &a3;
     a2.left = &a4;
     a2.right = &a5;
+    a3.left = &a6;
+    a3.right = &a7;
 
     b1.left = &b2;
-    b1.right = &b3;
-    b2.left = &b6;
-    b2.right = &b7;
+    b2.left = &b3;
+    b3.left = &b4;
+    b4.left = &b5;
+    b5.left = &b6;
+    b6.left = &b7;
 
     print_line("Test3: ", Solution().isSameTree(&a1, &b1));
+}
+
+void test4() {
+    auto a = make_tree_node<int>(-1, {0, 1, 2, 3, 4, 5, 6, -1, -1, 8, 9});
+    print_var(*a);
 }
 
 int main() {
     test1();
     test2();
     test3();
+    test4();
 }

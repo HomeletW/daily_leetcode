@@ -119,5 +119,5 @@ int main() {
                                     {},
                                     {}};
     auto res = Solution().sortItems(5, 5, group, beforeItems);
-    print_range(res);
+    print_line(res);
 }

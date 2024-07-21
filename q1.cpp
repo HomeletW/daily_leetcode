@@ -13,7 +13,7 @@ public:
         unordered_map<int, int> map;  // complement -> index
         for (int i = 0; i < nums.size(); ++i) {
             int num = nums[i];
-            print_var(sep, map, nums[i], target);
+            print_varl(sep, map, nums[i], target);
             if (map.contains(num)) {
                 return {i, map[num]};
             } else {

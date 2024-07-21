@@ -52,5 +52,4 @@ int main() {
     auto result = Solution().allPathsSourceTarget(graph);
 //    for_each(std::ranges::ref_view(result), print_range<decltype(result[0])>);
     print(result);
-    print("i: ", {123, 324});
 }

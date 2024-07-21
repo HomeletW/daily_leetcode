@@ -30,5 +30,5 @@ int main() {
 //    vector<int> citations{3, 0, 6, 1, 5};
 //    vector<int> citations{1, 3, 1};
     vector<int> citations{100};
-    print_line(sepnl, Solution().hIndex(citations));
+    print_line(sep, Solution().hIndex(citations));
 }
