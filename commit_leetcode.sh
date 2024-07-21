@@ -13,6 +13,9 @@ function usage() {
 
 QUESTION_NUMBER=
 
+QUESTION_NUMBER=$1
+shift
+
 # Arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -28,16 +31,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-QUESTION_NUMBER=$1
-shift
-
-if [ ! -f "q${QUESTION_NUMBER}.cpp" ]; then
+if [ ! -e "q${QUESTION_NUMBER}.cpp" ]; then
     echo "The cpp answer for question ${QUESTION_NUMBER} does not exist."
     exit
 fi
 
 while true; do
-  read -r -p "Committing q${QUESTION_NUMBER} ... Confirm? [Y]/n" CONFIRMATION
+  read -r -p "Committing q${QUESTION_NUMBER} ... Confirm? [Y]/n  " CONFIRMATION
   CONFIRMATION=${CONFIRMATION:-Y}
 
   if [[ "$CONFIRMATION" =~ ^[Yy]$ ]]; then
@@ -52,24 +52,7 @@ done
 
 CURRENT_DATE=$(date +"%Y-%m-%d")
 
-TEMPLATE_CPP="/**
- * ${QUESTION_NUMBER}. ${TEST_NAME}
- * ${URL}
- *
- * Date: ${CURRENT_DATE}
- */
+TEMPLATE_GIT_COMMIT_MSG="daily leetcode ${CURRENT_DATE}"
 
-#include \"my_util.hpp\"
-
-using namespace std;
-
-int main() {
-
-}"
-TEMPLATE_CMAKE="add_leetcode(q${QUESTION_NUMBER})"
-TEMPLATE_GIT_COMMIT_MSG="${CURRENT_DATE}: Daily Leetcode ${QUESTION_NUMBER}."
-
-echo "${TEMPLATE_CPP}" > "q${QUESTION_NUMBER}.cpp"
-echo "${TEMPLATE_CMAKE}" >> CMakeLists.txt
 git add "q${QUESTION_NUMBER}.cpp" CMakeLists.txt
 git commit -m "${TEMPLATE_GIT_COMMIT_MSG}"

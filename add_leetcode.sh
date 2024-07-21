@@ -42,7 +42,7 @@ P_TEST_NAME=$(echo "${TEST_NAME}" | tr ' ' '-' | awk '{print tolower($0)}')
 URL="https://leetcode.com/problems/${P_TEST_NAME}"
 
 while true; do
-  read -r -p "Adding q${QUESTION_NUMBER} at ${URL}... Confirm? [Y]/n" CONFIRMATION
+  read -r -p "Adding q${QUESTION_NUMBER} at ${URL}... Confirm? [Y]/n  " CONFIRMATION
   CONFIRMATION=${CONFIRMATION:-Y}
 
   if [[ "$CONFIRMATION" =~ ^[Yy]$ ]]; then
@@ -72,9 +72,6 @@ int main() {
 
 }"
 TEMPLATE_CMAKE="add_leetcode(q${QUESTION_NUMBER})"
-TEMPLATE_GIT_COMMIT_MSG="${CURRENT_DATE}: Daily Leetcode ${QUESTION_NUMBER}."
 
 echo "${TEMPLATE_CPP}" > "q${QUESTION_NUMBER}.cpp"
 echo "${TEMPLATE_CMAKE}" >> CMakeLists.txt
-git add "q${QUESTION_NUMBER}.cpp" CMakeLists.txt
-git commit -m "${TEMPLATE_GIT_COMMIT_MSG}"
