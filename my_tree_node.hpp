@@ -1,7 +1,85 @@
-//
-// Created by Hongcheng Wei on 2024-05-28.
-//
-
+/**
+ * Tree Node generic definitions and my_print framework support.
+ *
+ * Defines an generic version of the Leetcode TreeNode definitions.
+ * Usage:
+ *      using TreeNode = TreeNode_generic<int>;
+ *
+ * Supports printing of a tree structure, to ease the debug process.
+ *      print_v(*tree_head);
+ * Turns into:
+ *                                  ┌───┐
+ *                                  │ 1 │
+ *                                  └───┘
+ *                             ┌──────┴───────┐
+ *                           ┌───┐          ┌───┐
+ *                           │ 2 │          │ 3 │
+ *                           └───┘          └───┘
+ *                       ┌─────┴          ┌───┴───┐
+ *                     ┌───┐            ┌───┐   ┌───┐
+ *                     │ 4 │            │ 6 │   │ 7 │
+ *                     └───┘            └───┘   └───┘
+ *               ┌───────┴────────┐               ┴───┐
+ *             ┌───┐            ┌───┐              ┌────┐
+ *             │ 8 │            │ 9 │              │ 15 │
+ *             └───┘            └───┘              └────┘
+ *        ┌──────┴──────┐                          ┌──┴───┐
+ *     ┌────┐        ┌────┐                     ┌────┐ ┌────┐
+ *     │ 16 │        │ 17 │                     │ 30 │ │ 31 │
+ *     └────┘        └────┘                     └────┘ └────┘
+ *     ┌──┴───┐      ┌──┴───┐
+ *  ┌────┐ ┌────┐ ┌────┐ ┌────┐
+ *  │ 32 │ │ 33 │ │ 34 │ │ 35 │
+ *  └────┘ └────┘ └────┘ └────┘
+ *
+ * Another example:
+ *                                     ┌────────────┐
+ *                                     │ 1111111111 │
+ *                                     │ 222222     │
+ *                                     │ 333333     │
+ *                                     │ 4445       │
+ *                                     └────────────┘
+ *                          ┌─────────────────┴─────────────────┐
+ *                      ┌──────┐                           ┌────────┐
+ *                      │ 2222 │                           │ 333    │
+ *                      │ 4124 │                           │ 512314 │
+ *                      └──────┘                           │ 14124  │
+ *                                                         │ 51251  │
+ *                                                         │ 5123   │
+ *                                                         └────────┘
+ *              ┌───────────┴────────────┐                  ┌───┴───┐
+ *  ┌──────────────────────┐ ┌───────────────────────┐ ┌────────┐ ┌───┐
+ *  │                      │ │                       │ │ 6      │ │ 7 │
+ *  │        {3, 21, 2001} │ │        {10, 28, 2000} │ │        │ └───┘
+ *  │  index  0  1   2     │ │  index  0   1   2     │ │        │
+ *  └──────────────────────┘ └───────────────────────┘ │ 123123 │
+ *                                                     └────────┘
+ *
+ *  There are a lot of ways to customize the looks of the tree, by using a custom PrintConfig, the above variant
+ *  prints out a "boxed" version of the tree, and the boxing char are using wchar_t.
+ *  There might be some fiddle around to get wchar_t to properly print, checkout util_test.cpp
+ *  for examples.
+ *
+ *  You may also prints out the tree without wide chars, or without boxing entirely.
+ *
+ *              +-----+
+ *              | 100 |
+ *              +-----+
+ *         /-------+-------\
+ *      +-----+         +-----+
+ *      | 200 |         | 300 |
+ *      +-----+         +-----+
+ *     /---+---\       /---+---\
+ *  +-----+ +-----+ +-----+ +-----+
+ *  | 400 | | 500 | | 600 | | 700 |
+ *  +-----+ +-----+ +-----+ +-----+
+ *
+ *        100
+ *     /---+---\
+ *    200     300
+ *   /-+-\   /-+-\
+ *  400 500 600 700
+ */
 #pragma once
 
 #include "my_util.hpp"
@@ -64,8 +142,8 @@ struct TreeNode_prettyPrint {
     int anchor;                 // marks the center of this node, where the connection would point to
     int depth;                  // metadata marks the depth of the current node
 
-    TreeNode_prettyPrint(const TreeNode_generic<T> *root, const PrintConfig *config)
-            : TreeNode_prettyPrint{root, config, nullptr, 0} {
+    TreeNode_prettyPrint(const TreeNode_generic<T> *root, const PrintConfig *config, bool boxed = true)
+            : TreeNode_prettyPrint{root, config, nullptr, boxed, 0} {
     }
 
     ~TreeNode_prettyPrint() {
@@ -131,15 +209,24 @@ private:
     TreeNode_prettyPrint(const TreeNode_generic<T> *node,
                          const PrintConfig *config,
                          TreeNode_prettyPrint *parentNode,
+                         bool boxed,
                          int depth)
             : node{node}, config{config}, parentNode{parentNode}, leftPad{0}, rightPad{0}, anchor{0}, depth{depth} {
         assert(node != nullptr);
         std::string res = print_to_string(node->val);
-        if constexpr (std::is_same_v<CharT, char>) {
-            str = make_boxed<CharT, BoxDrawingChar, true, false, false>(res);
+        if (boxed) {
+            if constexpr (std::is_same_v<CharT, char>) {
+                str = make_boxed<CharT, BoxDrawingChar, true, false, false>(res);
+            } else {
+                str = make_boxed<CharT, BoxDrawingWideChar, true, false, false>(
+                        std::basic_string<CharT>(res.begin(), res.end()));
+            }
         } else {
-            str = make_boxed<CharT, BoxDrawingWideChar, true, false, false>(
-                    std::basic_string<CharT>(res.begin(), res.end()));
+            if constexpr (std::is_same_v<CharT, char>) {
+                str = res;
+            } else {
+                str = std::basic_string<CharT>(res.begin(), res.end());
+            }
         }
 
         // the height of the node is one plus how many newlines there are
@@ -155,7 +242,7 @@ private:
             // initial setup of length, later length will be recalculated
             length = 0;
             if (node->left != nullptr) {
-                leftNode = new TreeNode_prettyPrint{node->left, config, this, depth + 1};
+                leftNode = new TreeNode_prettyPrint{node->left, config, this, boxed, depth + 1};
                 length += leftNode->length;
             } else {
                 leftNode = nullptr;
@@ -163,7 +250,7 @@ private:
             }
             length += config->pad_mid;
             if (node->right != nullptr) {
-                rightNode = new TreeNode_prettyPrint{node->right, config, this, depth + 1};
+                rightNode = new TreeNode_prettyPrint{node->right, config, this, boxed, depth + 1};
                 length += rightNode->length;
             } else {
                 rightNode = nullptr;
@@ -429,14 +516,14 @@ template<typename PrintConfig, typename T, typename CharT>
 static std::basic_ostream<CharT> &pretty_print_tree(
         std::basic_ostream<CharT> &os,
         const TreeNode_generic<T> *root,
-        PrintConfig config = {}) {
+        PrintConfig config = {}, bool boxed = true) {
     if (root == nullptr) {
         os << '\n';
         return os;
     }
 
     // construct PrintNode
-    TreeNode_prettyPrint<T, CharT, PrintConfig> rootPrint{root, &config};
+    TreeNode_prettyPrint<T, CharT, PrintConfig> rootPrint{root, &config, boxed};
     rootPrint.setLength();
     rootPrint.setPadding();
     rootPrint.render(os);

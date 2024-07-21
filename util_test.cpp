@@ -40,6 +40,7 @@ void test_list_node() {
 }
 
 void test_tree_node() {
+    auto small = make_tree_node(-1, {100, 200, 300, 400, 500, 600, 700});
     auto a = make_tree_node(-1, {
             1,
             2, 3,
@@ -82,6 +83,8 @@ void test_tree_node() {
     pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, d.get());
     pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, e.get());
     print_v(*a, *b, *c, *d, *e);
+    pretty_print_tree<DefaultTreeNodePrettyPrintConfig, int, char>(std::cout, small.get(), {}, false);
+    pretty_print_tree<DefaultTreeNodePrettyPrintConfig, int, char>(std::cout, small.get(), {}, true);
 }
 
 int main() {

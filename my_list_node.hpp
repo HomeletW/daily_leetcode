@@ -1,6 +1,24 @@
-//
-// Created by Hongcheng Wei on 2024-05-26.
-//
+/**
+ * List Node generic definitions and my_print framework support.
+ *
+ * Defines an generic version of the Leetcode ListNode definitions.
+ * Usage:
+ *      using ListNode = ListNode_generic<int>;
+ *
+ * To print:
+ *      print_v(node_head);
+ * Turns into:
+ *      node_head: 1 -> 2 -> 3 -> END
+ *
+ * Also support a macro definitions to quickly define a list.
+ * Since the list is allocated on stack, there is no need to manage the memory.
+ * Usage:
+ *      // define ListNode_generic<int> with head "a0" with the content.
+ *      make_list_node(int, a, 5, 4, 3, 2);
+ *      print_v(a0);
+ * Turns into:
+ *      a: 5 -> 4 -> 3 -> 2 -> END
+ */
 
 #pragma once
 

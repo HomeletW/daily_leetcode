@@ -1,6 +1,7 @@
-//
-// Created by Hongcheng Wei on 2024-05-26.
-//
+/**
+ * This file contains the preprocessor magic.
+ * These magic has various sources from the internet (stackoverflow, blogs, reddit, chatgpt, ...).
+ */
 
 #pragma once
 

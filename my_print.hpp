@@ -1,7 +1,35 @@
-//
-// Created by Hongcheng Wei on 2024-06-02.
-//
-
+/**
+ * My Printing Utilities.
+ *
+ * A custom printing utility framework.
+ *
+ * The main idea is to help me debugging through leetcode questions. For example:
+ *      print_v(a, b, vec_c, IndexedVector{vec_d});
+ * Turns into:
+ *      a: 1
+ *      b: 2
+ *      c: {hello, world}
+ *      d:
+ *              {this, is, an, example}
+ *       index:  0     1   2   3
+ *
+ * Headings serves as separators, e.g. separating between iteration counts.
+ *      print_vl(h1(i), a, b);
+ * Turns into:
+ *      ====== i: 0 ======
+ *      a: 1
+ *      b: 2
+ *      ====== i: 1 ======
+ *      ...
+ *
+ * - Support printing of STL containers like vector, maps, sets, pairs, tuples.
+ * - Support customized print by specializing struct UtilPrint<T>.
+ * - Support printing of variables with the name and it's value through
+ *   macros "print_v" and it's variants.
+ * - Support printing of heading in the form of "====== text ======".
+ *   Text support in headings supports anything that UtilPrint can support.
+ * - Also support multi-line heading contents.
+ */
 #pragma once
 
 #include <string>
