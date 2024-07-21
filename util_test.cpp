@@ -85,6 +85,9 @@ void test_tree_node() {
     print_v(*a, *b, *c, *d, *e);
     pretty_print_tree<DefaultTreeNodePrettyPrintConfig, int, char>(std::cout, small.get(), {}, false);
     pretty_print_tree<DefaultTreeNodePrettyPrintConfig, int, char>(std::cout, small.get(), {}, true);
+
+    auto small_tree = make_tree_node(-1, {1, 2, 3, 4, -1, 6, 7, -1, -1, -1, -1, 12, 13, -1, 15});
+    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, small_tree.get());
 }
 
 int main() {

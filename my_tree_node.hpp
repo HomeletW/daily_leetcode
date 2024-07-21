@@ -79,6 +79,32 @@
  *    200     300
  *   /-+-\   /-+-\
  *  400 500 600 700
+ *
+ *  Also support quick definitions of a TreeNode structure.
+ *  Usage:
+ *      // The first argument is a sentinel value.
+ *      // The second argument is a list of value representing the by-level traversal of the tree.
+ *      // When values in the list equals to the sentinel, it is replaced by an empty tree node.
+ *      // The returned value is an unique_ptr of the TreeNode_generic.
+ *      auto small_tree = make_tree_node<int>(-1, {1, 2, 3, 4, -1, 6, 7, -1, -1, -1, -1, 12, -1, -1, 15});
+ *  Turns into:
+ *           ┌───┐
+ *           │ 1 │
+ *           └───┘
+ *      ┌──────┴───────┐
+ *    ┌───┐          ┌───┐
+ *    │ 2 │          │ 3 │
+ *    └───┘          └───┘
+ *    ┌─┴         ┌────┴────┐
+ *  ┌───┐       ┌───┐     ┌───┐
+ *  │ 4 │       │ 6 │     │ 7 │
+ *  └───┘       └───┘     └───┘
+ *             ┌──┴───┐     ┴──┐
+ *          ┌────┐ ┌────┐   ┌────┐
+ *          │ 12 │ │ 13 │   │ 15 │
+ *          └────┘ └────┘   └────┘
+ *
+ *
  */
 #pragma once
 
