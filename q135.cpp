@@ -12,39 +12,30 @@ using namespace std;
 class Solution {
 public:
     int candy(vector<int> &ratings) {
-        int num_candy = 0;
-        int min_rating_index = -1;
-        for (int i = 0; i < ratings.size(); ++i) {
-            int rating = ratings[i];
-            if (min_rating_index == -1) {
-                // just started a new iteration
-                if (rating != 0) {
-                    min_rating_index = i;
-                }
-                num_candy += 1;  // at least one candy for each child
-            } else if (rating < ratings[min_rating_index]) {
-                // need to compensate for the previous children
-                // that were using the previous min_rating
-                num_candy += (i - min_rating_index);
-                min_rating_index = i;
-            } else {
-                if (i == ratings.size()) {
+        // This is an O(n) time and O(n) space solution
+        // O(1) space solution is possible.
+        vector<int> c_(ratings.size(), 1);
 
-                }
-                int next_rating;
-                if (i != ratings.size() && rating ) {
-                } else {
-
-                }
-            }
-
-            if (rating == 0) {
-                // reset
+        // make sure left side is greater
+        for (int i = 1; i < ratings.size(); ++i) {
+            if (ratings[i] > ratings[i - 1] && c_[i] <= c_[i - 1]) {
+                c_[i] = c_[i - 1] + 1;
             }
         }
+
+        // make sure right size is greater
+        for (int i = ratings.size() - 2; i >= 0; --i) {
+            if (ratings[i] > ratings[i + 1] && c_[i] <= c_[i + 1]) {
+                c_[i] = c_[i + 1] + 1;
+            }
+        }
+
+        return accumulate(c_.begin(), c_.end(), 0);
     }
 };
 
 int main() {
-
+    vector<int> ratings1{1, 0, 2}, ratings2{1, 2, 2};
+    print_v(Solution().candy(ratings1));
+    print_v(Solution().candy(ratings2));
 }
