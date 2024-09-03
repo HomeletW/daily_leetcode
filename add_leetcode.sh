@@ -5,10 +5,12 @@ set -e
 set -o pipefail
 
 function usage() {
-    echo "add_leetcode.sh [--help]"
+    echo "add_leetcode.sh [--help] [-n|--name]"
     echo "    Utilities to add an leetcode to the project."
     echo "    -h, --help"
     echo "        Print this message and exit."
+    echo "    -n, --name"
+    echo "        Provide the leetcode name directly."
 }
 
 QUESTION_NUMBER=
@@ -22,6 +24,12 @@ while [[ $# -gt 0 ]]; do
       usage
       exit 0
       ;;
+    -n|--name)
+      shift
+      QUESTION_NUMBER=$(echo "$*" | awk -F'. ' '{print $1}')
+      TEST_NAME=$(echo "$*" | awk -F'. ' '{sub($1". ", ""); print $0}')
+      break
+      ;;
     *)
       echo "Unknown option $1"
       usage
@@ -30,8 +38,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-read -r -p "Question Number?   " QUESTION_NUMBER
-read -r -p "Test Name?         " TEST_NAME
+if [ -z "$QUESTION_NUMBER" ]; then
+  read -r -p "Question Number?   " QUESTION_NUMBER
+fi
+
+if [ -z "$TEST_NAME" ]; then
+  read -r -p "Test Name?         " TEST_NAME
+fi
 
 if [ -f "q${QUESTION_NUMBER}.cpp" ]; then
     echo "The cpp answer for question ${QUESTION_NUMBER} already existed."
@@ -71,7 +84,8 @@ using namespace std;
 int main() {
 
 }"
-TEMPLATE_CMAKE="add_leetcode(q${QUESTION_NUMBER})"
+TEMPLATE_CMAKE="add_executable(q${QUESTION_NUMBER} q${QUESTION_NUMBER}.cpp)"
 
 echo "${TEMPLATE_CPP}" > "q${QUESTION_NUMBER}.cpp"
 echo "${TEMPLATE_CMAKE}" >> CMakeLists.txt
+git add "q${QUESTION_NUMBER}.cpp" CMakeLists.txt

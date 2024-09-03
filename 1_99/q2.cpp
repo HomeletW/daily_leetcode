@@ -4,29 +4,9 @@
  */
 
 #include "my_util.hpp"
+#include "my_list_node.hpp"
 
-using namespace std;
-
-struct ListNode {
-    int val;
-    ListNode *next;
-
-    ListNode() : val(0), next(nullptr) {}
-
-    ListNode(int x) : val(x), next(nullptr) {}
-
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-
-    friend ostream &operator<<(ostream &os, const ListNode &node) {
-        print(node.val, " -> ");
-        if (node.next != nullptr) {
-            os << *node.next;
-        } else {
-            os << "END";
-        }
-        return os;
-    }
-};
+using ListNode = ListNode_generic<int>;
 
 class Solution {
 public:

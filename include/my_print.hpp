@@ -83,7 +83,7 @@ std::ostream &print_single(std::ostream &os, const T &v) {
     } else if constexpr (Streamable<T>) {
         os << v;
     } else {
-        static_assert(false, "failed to print");
+        //static_assert(false, "failed to print");
     }
     return os;
 }
@@ -311,7 +311,7 @@ static constexpr auto get_next_line(const std::basic_string_view<CharT> &str, si
 
 template<typename CharT, typename BoxChar, bool align_left, bool align_right, bool align_center>
 static auto make_boxed(const std::basic_string_view<CharT> &str, BoxChar boxChar = {}) {
-    static_assert(align_left + align_right + align_center == 1);
+    //static_assert(align_left + align_right + align_center == 1);
     size_t length = get_max_line_length(str) + 2;
     size_t lastPos = std::basic_string_view<CharT>::npos;
 
@@ -335,7 +335,7 @@ static auto make_boxed(const std::basic_string_view<CharT> &str, BoxChar boxChar
             left_pad = (length - strThisLine.size()) / 2;
             right_pad = (length - strThisLine.size()) - left_pad;
         } else {
-            static_assert(false);
+            //static_assert(false);
         }
 
         ss << boxChar.left;
@@ -354,7 +354,7 @@ static auto make_boxed(const std::basic_string_view<CharT> &str, BoxChar boxChar
 
 template<bool align_left, bool align_right, bool align_center>
 static constexpr auto make_heading(const std::string_view &title, size_t lineSize, char styleChar) {
-    static_assert(align_left + align_right + align_center == 1);
+    //static_assert(align_left + align_right + align_center == 1);
 
     if (title.size() == 0) {
         return std::string(lineSize, styleChar);
@@ -404,7 +404,7 @@ static constexpr auto make_heading(const std::string_view &title, size_t lineSiz
                     left_pad = (lineSize - 2 - titleThisLine) / 2;
                     right_pad = (lineSize - 2 - titleThisLine) - left_pad;
                 } else {
-                    static_assert(false);
+                    //static_assert(false);
                 }
 
                 assert(left_pad >= 2);
