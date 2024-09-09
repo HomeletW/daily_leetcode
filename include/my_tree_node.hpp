@@ -110,6 +110,21 @@
 
 #include "my_util.hpp"
 
+template<typename TreeNodeType>
+concept TreeNodeLike = requires(TreeNodeType node) {
+    { node.val };
+    { node.left } -> std::convertible_to<TreeNodeType *>;
+    { node.right } -> std::convertible_to<TreeNodeType *>;
+    requires std::equality_comparable<decltype(node.val)>;
+    requires std::is_default_constructible_v<TreeNodeType>;
+    requires requires(decltype(node.val) v) {
+        { TreeNodeType(v) };
+    };
+    requires requires(decltype(node.val) v, TreeNodeType *left, TreeNodeType *right) {
+        { TreeNodeType(v, left, right) };
+    };
+};
+
 template<typename T>
 struct TreeNode_generic {
     T val;
@@ -123,6 +138,55 @@ struct TreeNode_generic {
     TreeNode_generic(T x, TreeNode_generic<T> *left, TreeNode_generic<T> *right) : val(std::move(x)), left(left),
                                                                                    right(right) {}
 };
+
+static_assert(TreeNodeLike<TreeNode_generic<int>>);
+
+template<TreeNodeLike TreeNodeType>
+static void free_tree_node(TreeNodeType *root) {
+    if (root != nullptr) {
+        free_tree_node(root->left);
+        free_tree_node(root->right);
+        delete root;
+    }
+}
+
+template<TreeNodeLike TreeNodeType>
+static std::unique_ptr<TreeNodeType, decltype(&free_tree_node<TreeNodeType>)> make_tree_node(
+        const decltype(TreeNodeType::val) &sentinel,
+        const std::vector<std::remove_reference_t<decltype(TreeNodeType::val)>> &values) {
+    if (std::empty(values)) {
+        return {nullptr, &free_tree_node<TreeNodeType>};
+    }
+
+    std::vector<TreeNodeType *> stack;
+    stack.resize(values.size(), nullptr);
+    for (int i = values.size() - 1; i >= 0; --i) {
+        if (values[i] != sentinel) {
+            stack[i] = new TreeNodeType{values[i]};
+            int leftIndex = i * 2 + 1, rightIndex = i * 2 + 2;
+            if (leftIndex < values.size()) {
+                stack[i]->left = stack[leftIndex];
+            }
+            if (rightIndex < values.size()) {
+                stack[i]->right = stack[rightIndex];
+            }
+        } else {
+            stack[i] = nullptr;
+        }
+    }
+
+    return {stack.front(), &free_tree_node<TreeNodeType>};
+}
+
+template<typename T>
+static std::unique_ptr<TreeNode_generic<T>, decltype(&free_tree_node<TreeNode_generic<T>>)> make_tree_node(
+        const T &sentinel, const std::vector<T> &values) {
+    return make_tree_node<TreeNode_generic<T>>(std::move(sentinel), std::move(values));
+}
+
+// *********************************************************************************************************************
+// PrettyPrint Tree
+// *********************************************************************************************************************
 
 struct DefaultTreeNodePrettyPrintConfig {
     static constexpr int pad_left = 1;
@@ -156,9 +220,9 @@ struct BoxedTreeNodePrettyPrintConfig {
     static constexpr wchar_t connection_char = BoxDrawingWideChar::top;
 };
 
-template<typename T, typename CharT, typename PrintConfig>
+template<TreeNodeLike TreeNodeType, typename CharT, typename PrintConfig>
 struct TreeNode_prettyPrint {
-    const TreeNode_generic<T> *node;
+    const TreeNodeType *node;
     const PrintConfig *config;
     TreeNode_prettyPrint *parentNode, *leftNode, *rightNode;
     std::basic_string<CharT> str;
@@ -168,7 +232,7 @@ struct TreeNode_prettyPrint {
     int anchor;                 // marks the center of this node, where the connection would point to
     int depth;                  // metadata marks the depth of the current node
 
-    TreeNode_prettyPrint(const TreeNode_generic<T> *root, const PrintConfig *config, bool boxed = true)
+    TreeNode_prettyPrint(const TreeNodeType *root, const PrintConfig *config, bool boxed = true)
             : TreeNode_prettyPrint{root, config, nullptr, boxed, 0} {
     }
 
@@ -232,7 +296,7 @@ private:
     // *****************************************************************************************************************
     // Private APIs
     // *****************************************************************************************************************
-    TreeNode_prettyPrint(const TreeNode_generic<T> *node,
+    TreeNode_prettyPrint(const TreeNodeType *node,
                          const PrintConfig *config,
                          TreeNode_prettyPrint *parentNode,
                          bool boxed,
@@ -538,10 +602,10 @@ private:
     }
 };
 
-template<typename PrintConfig, typename T, typename CharT>
+template<typename PrintConfig, TreeNodeLike TreeNodeType, typename CharT>
 static std::basic_ostream<CharT> &pretty_print_tree(
         std::basic_ostream<CharT> &os,
-        const TreeNode_generic<T> *root,
+        const TreeNodeType *root,
         PrintConfig config = {}, bool boxed = true) {
     if (root == nullptr) {
         os << '\n';
@@ -549,7 +613,7 @@ static std::basic_ostream<CharT> &pretty_print_tree(
     }
 
     // construct PrintNode
-    TreeNode_prettyPrint<T, CharT, PrintConfig> rootPrint{root, &config, boxed};
+    TreeNode_prettyPrint<TreeNodeType, CharT, PrintConfig> rootPrint{root, &config, boxed};
     rootPrint.setLength();
     rootPrint.setPadding();
     rootPrint.render(os);
@@ -557,45 +621,9 @@ static std::basic_ostream<CharT> &pretty_print_tree(
     return os;
 }
 
-template<typename T>
-static void free_tree_node(TreeNode_generic<T> *root) {
-    if (root != nullptr) {
-        free_tree_node(root->left);
-        free_tree_node(root->right);
-        delete root;
-    }
-}
-
-template<typename T>
-static std::unique_ptr<TreeNode_generic<T>, decltype(&free_tree_node<T>)> make_tree_node(
-        const T &sentinel, const std::vector<T> &values) {
-    if (empty(values)) {
-        return {nullptr, &free_tree_node<T>};
-    }
-
-    std::vector<TreeNode_generic<T> *> stack;
-    stack.resize(values.size(), nullptr);
-    for (int i = values.size() - 1; i >= 0; --i) {
-        if (values[i] != sentinel) {
-            stack[i] = new TreeNode_generic<T>{values[i]};
-            int leftIndex = i * 2 + 1, rightIndex = i * 2 + 2;
-            if (leftIndex < values.size()) {
-                stack[i]->left = stack[leftIndex];
-            }
-            if (rightIndex < values.size()) {
-                stack[i]->right = stack[rightIndex];
-            }
-        } else {
-            stack[i] = nullptr;
-        }
-    }
-
-    return {stack.front(), &free_tree_node<T>};
-}
-
-template<typename T>
-struct UtilPrint<TreeNode_generic<T>> {
-    static std::ostream &my_print(std::ostream &os, const TreeNode_generic<T> &v) {
-        return pretty_print_tree<DefaultTreeNodePrettyPrintConfig, T, char>(os, std::addressof(v));
+template<TreeNodeLike TreeNodeType>
+struct UtilPrint<TreeNodeType> {
+    static std::ostream &my_print(std::ostream &os, const TreeNodeType &v) {
+        return pretty_print_tree<DefaultTreeNodePrettyPrintConfig, TreeNodeType, char>(os, std::addressof(v));
     }
 };

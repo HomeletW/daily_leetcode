@@ -59,14 +59,8 @@ template<class T>
 concept StringLike = std::is_convertible_v<T, std::string_view>;
 
 template<typename T>
-concept MyPrintable =requires(std::ostream &os,
-                              const T &value
-) {
-    {
-    UtilPrint<T>::my_print(os, value
-    )
-    } ->
-    std::convertible_to<std::ostream &>;
+concept MyPrintable =requires(std::ostream &os, const T &value) {
+    { UtilPrint<T>::my_print(os, value) } -> std::convertible_to<std::ostream &>;
 };
 
 template<typename T>
@@ -87,6 +81,11 @@ std::ostream &print_single(std::ostream &os, const T &v) {
     }
     return os;
 }
+
+template<typename T>
+concept Printable = requires(std::ostream &os, const T &v) {
+    { print_single(os, v) } -> std::same_as<std::ostream &>;
+};
 
 template<>
 struct UtilPrint<bool> {

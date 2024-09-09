@@ -15,7 +15,7 @@ template<>
 struct UtilPrint<ListNode *> {
     static std::ostream &my_print(std::ostream &os, ListNode *const &v) {
         if (v != nullptr) {
-            os << *v;
+            print_single(os, *v);
         } else {
             os << "nullptr";
         }

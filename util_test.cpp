@@ -77,17 +77,17 @@ void test_tree_node() {
             8, -1, -1, -1, -1, -1, -1, -1,
             16, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
     });
-    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, a.get());
-    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, b.get());
-    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, std::string, wchar_t>(std::wcout, c.get());
-    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, d.get());
-    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, e.get());
+    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, TreeNode_generic<int>, wchar_t>(std::wcout, a.get());
+    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, TreeNode_generic<int>, wchar_t>(std::wcout, b.get());
+    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, TreeNode_generic<std::string>, wchar_t>(std::wcout, c.get());
+    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, TreeNode_generic<int>, wchar_t>(std::wcout, d.get());
+    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, TreeNode_generic<int>, wchar_t>(std::wcout, e.get());
     print_v(*a, *b, *c, *d, *e);
-    pretty_print_tree<DefaultTreeNodePrettyPrintConfig, int, char>(std::cout, small.get(), {}, false);
-    pretty_print_tree<DefaultTreeNodePrettyPrintConfig, int, char>(std::cout, small.get(), {}, true);
+    pretty_print_tree<DefaultTreeNodePrettyPrintConfig, TreeNode_generic<int>, char>(std::cout, small.get(), {}, false);
+    pretty_print_tree<DefaultTreeNodePrettyPrintConfig, TreeNode_generic<int>, char>(std::cout, small.get(), {}, true);
 
     auto small_tree = make_tree_node(-1, {1, 2, 3, 4, -1, 6, 7, -1, -1, -1, -1, 12, 13, -1, 15});
-    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, int, wchar_t>(std::wcout, small_tree.get());
+    pretty_print_tree<BoxedTreeNodePrettyPrintConfig, TreeNode_generic<int>, wchar_t>(std::wcout, small_tree.get());
 }
 
 int main() {
