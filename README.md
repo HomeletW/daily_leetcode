@@ -46,7 +46,7 @@ Define ListNode_generic<int> with head "a0" with the content.
 
 Macro expands into:
 
-    ListNode_generic<int> a3{2, &a4}, a2{3, &a3}, a1{4, &a2}, a0{5, &a1};
+    ListNode_generic<int> a3{2}, a2{3, &a3}, a1{4, &a2}, a0{5, &a1};
 ```
 
 ### my_tree_node.hpp
