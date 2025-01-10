@@ -39,7 +39,7 @@ CURRENT_DATE=$(date +"%Y-%m-%d")
 for QUESTION_NUMBER in "${QUESTION_NUMBERS[@]}"; do
 
     if [ ! -e "q${QUESTION_NUMBER}.cpp" ]; then
-        echo "The cpp answer for question ${QUESTION_NUMBER} does not exist."
+        echo "The cpp answer for q${QUESTION_NUMBER} does not exist."
         continue
     fi
 
