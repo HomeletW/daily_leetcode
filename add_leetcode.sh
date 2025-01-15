@@ -88,4 +88,6 @@ TEMPLATE_CMAKE="add_executable(q${QUESTION_NUMBER} q${QUESTION_NUMBER}.cpp)"
 
 echo "${TEMPLATE_CPP}" > "q${QUESTION_NUMBER}.cpp"
 echo "${TEMPLATE_CMAKE}" >> CMakeLists.txt
-git add "q${QUESTION_NUMBER}.cpp" CMakeLists.txt
+git add CMakeLists.txt
+git commit -m "Added q${QUESTION_NUMBER}.cpp"
+git add "q${QUESTION_NUMBER}.cpp"
